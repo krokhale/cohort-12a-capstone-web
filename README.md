@@ -1,3 +1,20 @@
+1. Add Tailwind to the app.
+2. Add React router.
+3. Cleanup the Home Page / App Router code
+4. Create a sort of  wireframe / Box model for the page.
+
+
+# Next Session:
+
+---
+
+> Add the user authentication.
+
+
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
