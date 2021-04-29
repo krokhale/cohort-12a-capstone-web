@@ -4,6 +4,11 @@
 4. Create a sort of  wireframe / Box model for the page.
 
 
+5. Create a mock representation of the categories on the UI
+6. Create a mock representation of the top bar/nav
+7. Create a mock representation of the questions. (Try to Use Ant Design Collapse)
+https://ant.design/components/collapse/#components-collapse-demo-accordion
+
 # Next Session:
 
 ---
