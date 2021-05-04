@@ -8,6 +8,13 @@
 6. Create a mock representation of the top bar/nav
 7. Create a mock representation of the questions. (Try to Use Ant Design Collapse)
 https://ant.design/components/collapse/#components-collapse-demo-accordion
+   
+
+--- 
+
+8. Once a user clicks on a new question button above, user should be able to see the new questions form here
+
+9. Once the user enters the information in the form and hits submit, you should fetch the questions for the category
 
 # Next Session:
 
