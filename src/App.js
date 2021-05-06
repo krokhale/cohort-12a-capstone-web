@@ -1,12 +1,19 @@
-
-
 import logo from './logo.svg';
-import {useEffect, useState} from 'react';
-import 'antd/dist/antd.css';
 import './App.css';
-import { Collapse } from 'antd';
+import 'antd/dist/antd.css';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
 
+import React, {useEffect, useState} from "react";
+
+import {Button, List, Collapse, Breadcrumb, Row, Col, Divider, notification} from 'antd';
+import Dashboard from "./Dashboard";
 const { Panel } = Collapse;
+
 
 const text = `
   A dog is a type of domesticated animal.
@@ -14,84 +21,134 @@ const text = `
   it can be found as a welcome guest in many households across the world.
 `;
 
+function Auth () {
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [retypePassword, setRetypePassword] = useState('');
+
+    const onSignIn = async (event) => {
+        event.preventDefault();
+        console.log(email)
+        console.log(password)
+        let res = await fetch('http://localhost:3000/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify({email, password})
+        })
+        let data = await res.json();
+        console.log(data);
+        if(data.token){
+            localStorage.setItem('token', data.token);
+            window.location.href = '/dashboard'
+        }
+
+
+    };
+
+    const onSignUp = async (event) => {
+        event.preventDefault();
+        console.log(email)
+        console.log(password)
+        console.log(retypePassword)
+        let res = await fetch('http://localhost:3000/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify({email, password})
+        })
+        let data = await res.json();
+        console.log(data);
+        if(data.success){
+            // Show a success message use ANT design success message?
+            notification['success']({
+                message: 'Thanks',
+                description:
+                    'You are all set. You can now login using your credentials.',
+            });
+
+        }
+
+    };
+
+    let questions = [{id: 12, txt: 'First Question'}, {id: 23, txt: 'Second Question'}, {id: 38, txt: 'Third Question'}];
+
+    const onCollapseChange = async (questionId) => {
+        console.log(questionId)
+    };
+
+    return (
+        <div>
+
+            <h1 className={'text-3xl text-center'}>Login Form</h1>
+
+            <form onSubmit={onSignIn}>
+                <Row type={'flex'} align={'center'} className={'mt-5'}>
+                    <Col span={24}>
+                        <input type="email" value={email} onChange={(ev) => setEmail(ev.currentTarget.value)} required className={'border w-full rounded'} placeholder={'Email address'}/>
+                    </Col>
+                    <Col span={24} className={'mt-5'}>
+                        <input type="password" value={password} onChange={(ev) => setPassword(ev.currentTarget.value)} required className={'border w-full rounded'} placeholder={'Password'}/>
+                    </Col>
+                    <Col span={24} className={'mt-5'}>
+                        <Button htmlType={'submit'} className={'border-0 bg-edorble-yellow-500 hover:bg-edorble-yellow-600 hover:text-black w-full rounded font-bold'}>Submit</Button>
+                    </Col>
+                </Row>
+            </form>
+
+
+            <Divider />
+
+            <h1 className={'text-3xl text-center'}>Signup Form</h1>
+
+            <form onSubmit={onSignUp}>
+                <Row type={'flex'} align={'center'} className={'mt-5'}>
+                    <Col span={24}>
+                        <input type="email" value={email} onChange={(ev) => setEmail(ev.currentTarget.value)} required className={'border w-full rounded'} placeholder={'Email address'}/>
+                    </Col>
+                    <Col span={24} className={'mt-5'}>
+                        <input type="password" value={password} onChange={(ev) => setPassword(ev.currentTarget.value)} required className={'border w-full rounded'} placeholder={'Password'}/>
+                    </Col>
+                    <Col span={24} className={'mt-5'}>
+                        <input type="password" value={retypePassword} onChange={(ev) => setRetypePassword(ev.currentTarget.value)} required className={'border w-full rounded'} placeholder={'Retype Password'}/>
+                        {(password != retypePassword) && <small className={'text-red-500 font-bold'}>Passwords don't match</small>}
+                    </Col>
+                    <Col span={24} className={'mt-5'}>
+                        <Button  htmlType={'submit'} disabled={password != retypePassword} className={'border-0 bg-edorble-yellow-500 hover:bg-edorble-yellow-600 hover:text-black w-full rounded font-bold'}>Submit</Button>
+                        {/*<Button loading={loading} disabled={password != retypePassword} type="primary" htmlType={'submit'} className={'border-0 w-full rounded font-bold'}>Submit</Button>*/}
+                    </Col>
+                </Row>
+            </form>
+
+        </div>
+    )
+}
 
 function App() {
 
-    const [categories, setCategories] = useState();
-    const [selectedCategory, setSelectedCategory] = useState();
 
+    return (
+        <Router>
+            <div>
 
-    const fetchCategories = async () => {
-        let res = await fetch('http://localhost:3000/api/v1/categories')
-        let json = await res.json();
-        setCategories(json);
-    };
-
-    useEffect(() => {
-        fetchCategories()
-    }, [])
-
-
-    const onChange = async () => {
-
-    };
-
-  return (
-    <>
-
-        <div className={'grid grid-cols-12'}>
-            <div className={'col-span-12 border p-8 bg-gray-200'}>
-                <h1 className={'text-center text-2xl'}>App Title</h1>
-
+                {/* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */}
+                <Switch>
+                    <Route path="/dashboard">
+                        <Dashboard />
+                    </Route>
+                    <Route path="/">
+                        <Auth />
+                    </Route>
+                </Switch>
             </div>
-
-            <div className={'col-span-12 sm:col-span-4 md:col-span-3 border'}>
-
-                {/*list out the categories here*/}
-                {/*<p>The current selected category is: {selectedCategory}</p>*/}
-
-                <ul>
-                    {categories && categories.map((category) => {
-                        return <li key={category.id}
-                                   onClick={() => setSelectedCategory(category.id)}
-                                   className={selectedCategory==category.id ? 'bg-gray-400 cursor-pointer p-12 border-b font-bold text-xl text-center' : 'cursor-pointer p-12 border-b font-bold text-xl text-center'}>{category.name}</li>
-                    })}
-                </ul>
-
-            </div>
-
-            <div className={'col-span-12 sm:col-span-8 md:col-span-9 p-10'}>
-                {!selectedCategory && <h1 className={'text-center text-2xl'}>Select a category to view the questions</h1>}
-                {selectedCategory && <button className={'text-white pr-4 pl-4 pt-3 pb-3 bg-blue-500 rounded cursor-pointer'}>New Question</button>}
-
-                <p>Once a user clicks on a new question button above, user should be able to see the new questions form here</p>
-                <p>Once the user enters the information in the form and hits submit, you should fetch the questions for the category</p>
-
-                <br/>
-                <br/>
-                <br/>
-
-                {selectedCategory && <Collapse defaultActiveKey={['1']} onChange={onChange} accordion>
-                    <Panel header="This is panel header 1" key="1">
-                        <p>{text}</p>
-                    </Panel>
-                    <Panel header="This is panel header 2" key="2">
-                        <p>{text}</p>
-                    </Panel>
-                    <Panel header="This is panel header 3" key="3">
-                        <p>{text}</p>
-                    </Panel>
-                </Collapse>}
-
-
-
-            </div>
-
-        </div>
-
-
-    </>
-  );
+        </Router>
+    );
 }
 
 export default App;

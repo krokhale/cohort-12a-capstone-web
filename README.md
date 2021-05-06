@@ -16,6 +16,12 @@ https://ant.design/components/collapse/#components-collapse-demo-accordion
 
 9. Once the user enters the information in the form and hits submit, you should fetch the questions for the category
 
+
+---
+
+10. Get the user to log out by adding a logout button on the navbar. HINT: use localstorate.removeItem
+11. Clean  up the Login and signup forms.
+
 # Next Session:
 
 ---
