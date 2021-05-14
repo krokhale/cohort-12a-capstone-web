@@ -23,6 +23,12 @@ function App() {
     const [newQuestionText, setNewQuestionText] = useState();
     const [questions, setQuestions] = useState();
 
+    const [answers, setAnswers] = useState([]);
+
+    const [answerTxt, setAnswerTxt] = useState('');
+
+    const [selectedQuestion, setSelectedQuestion] = useState();
+
 
     const fetchCategories = async () => {
         let res = await fetch('http://localhost:3000/api/v1/categories')
@@ -37,6 +43,13 @@ function App() {
         setQuestions(json);
     };
 
+    const fetchAnswers = async (id) => {
+        let res = await fetch(`http://localhost:3000/api/v1/questions/${id || selectedQuestion}/answers`)
+        let json = await res.json();
+        console.log(json)
+        setAnswers(json);
+    };
+
     useEffect(() => {
         fetchCategories()
     }, [])
@@ -48,8 +61,9 @@ function App() {
     }, [selectedCategory])
 
 
-    const onChange = async () => {
-
+    const onChange = async (id) => {
+        setSelectedQuestion(id)
+        fetchAnswers(id)
     };
 
     const onCreateQuestion = async () => {
@@ -69,6 +83,12 @@ function App() {
 
     };
 
+    const createAnswer = async () => {
+        // TODO Create a fetch call here to make a POST request to the backend
+        // url would be `http://localhost:3000/api/v1/questions/${selectedQuestion}/answers`
+
+    };
+
   return (
     <>
 
@@ -76,8 +96,13 @@ function App() {
             <textarea value={newQuestionText} onChange={(event) => {
                 setNewQuestionText(event.currentTarget.value)
             }} placeholder={'Enter your new question'} className={'w-full border p-2'}></textarea>
-
         </Modal>
+
+        {/*<Modal title="New Answer" visible={showNewQuestion} onOk={onCreateAnswer} onCancel={() => {setShowNewAnswer(false)}}>*/}
+        {/*    <textarea value={newQuestionText} onChange={(event) => {*/}
+        {/*        setNewQuestionText(event.currentTarget.value)*/}
+        {/*    }} placeholder={'Enter your new question'} className={'w-full border p-2'}></textarea>*/}
+        {/*</Modal>*/}
 
         <div className={'grid grid-cols-12'}>
             <div className={'col-span-12 border p-8 bg-gray-200'}>
@@ -116,8 +141,20 @@ function App() {
                 {selectedCategory && <Collapse onChange={onChange} accordion>
                     {questions && questions.map((question) => {
                         return <Panel header={question.questionTxt} key={question.id}>
-                            <button className={'text-white pr-3 pl-3 pt-2 pb-2 bg-blue-500 rounded cursor-pointer'}>New Answer</button>
+                            <input className={'border p-2 mb-2 w-1/3 block'} type="text" placeholder={'Start typing your answer for this question'} value={answerTxt} onChange={(event) => {
+                                setAnswerTxt(event.currentTarget.value)
+                            }}/>
+
+                            <button className={'text-white pr-3 pl-3 pt-2 pb-2 bg-blue-500 rounded cursor-pointer'} onClick={createAnswer}>Submit</button>
+
                             <p>List out all the answers for a question</p>
+                            <ul>
+                                {answers && answers.map((answer) => {
+                                    return <li>{answer.answerTxt}</li>
+                                })}
+                            </ul>
+
+
                         </Panel>
                     })}
                 </Collapse>}
